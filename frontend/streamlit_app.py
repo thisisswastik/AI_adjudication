@@ -17,10 +17,12 @@ st.set_page_config(
 )
 
 # Helper function to query the API
-def api_get(endpoint: str, params: dict = None):
+def api_get(endpoint: str, params: dict = None, timeout: float = 10.0):
     try:
         url_prefix = "" if endpoint == "/health" else "/api"
-        response = requests.get(f"{BACKEND_URL}{url_prefix}{endpoint}", params=params)
+        # Use a smaller timeout for health check to fail fast on boot
+        actual_timeout = 3.0 if endpoint == "/health" else timeout
+        response = requests.get(f"{BACKEND_URL}{url_prefix}{endpoint}", params=params, timeout=actual_timeout)
         if response.status_code == 200:
             return response.json()
         return None
@@ -28,10 +30,10 @@ def api_get(endpoint: str, params: dict = None):
         st.error(f"Failed to connect to backend API: {str(e)}")
         return None
 
-def api_post(endpoint: str, data: dict = None, files: dict = None):
+def api_post(endpoint: str, data: dict = None, files: dict = None, timeout: float = 90.0):
     try:
         url_prefix = "" if endpoint == "/health" else "/api"
-        response = requests.post(f"{BACKEND_URL}{url_prefix}{endpoint}", data=data, files=files)
+        response = requests.post(f"{BACKEND_URL}{url_prefix}{endpoint}", data=data, files=files, timeout=timeout)
         if response.status_code in [200, 201]:
             return response.json()
         else:

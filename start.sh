@@ -11,5 +11,5 @@ sleep 3
 TARGET_PORT=${PORT:-7860}
 echo "Starting Streamlit frontend on port $TARGET_PORT..."
 
-# Run Streamlit in the foreground
-streamlit run frontend/streamlit_app.py --server.port $TARGET_PORT --server.address 0.0.0.0
+# Run Streamlit in the foreground with CORS and XSRF disabled for iframe hosting
+streamlit run frontend/streamlit_app.py --server.port $TARGET_PORT --server.address 0.0.0.0 --server.enableCORS=false --server.enableXsrfProtection=false

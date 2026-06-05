@@ -22,7 +22,9 @@ router = APIRouter(prefix="/api")
 policy_service = PolicyService()
 
 # Uploads directory
-UPLOAD_DIR = "c:/Users/swastik/Desktop/plum/uploads"
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+WORKSPACE_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
+UPLOAD_DIR = os.path.join(WORKSPACE_ROOT, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @router.post("/seed", status_code=200)

@@ -14,7 +14,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class PolicyService:
-    def __init__(self, workspace_root: str = "c:/Users/swastik/Desktop/plum"):
+    def __init__(self, workspace_root: str = None):
+        if not workspace_root:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            workspace_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
         self.workspace_root = workspace_root
         self.policy_terms_path = os.path.join(workspace_root, "policy_terms.json")
         self.adjudication_rules_path = os.path.join(workspace_root, "adjudication_rules.md")

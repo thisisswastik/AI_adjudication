@@ -11,7 +11,9 @@ from reportlab.lib.units import inch
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TEST_DATA_DIR = "c:/Users/swastik/Desktop/plum/test_data"
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+WORKSPACE_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
+TEST_DATA_DIR = os.path.join(WORKSPACE_ROOT, "test_data")
 os.makedirs(TEST_DATA_DIR, exist_ok=True)
 
 def generate_prescription_pdf(case_id: str, patient_name: str, date_str: str, rx_data: dict, output_path: str):
@@ -290,7 +292,7 @@ def generate_bill_pdf(case_id: str, patient_name: str, date_str: str, bill_data:
 
 def generate_all_mock_documents():
     """Reads test_cases.json and creates mock files for all cases in workspace."""
-    test_cases_path = "c:/Users/swastik/Desktop/plum/test_cases.json"
+    test_cases_path = os.path.join(WORKSPACE_ROOT, "test_cases.json")
     if not os.path.exists(test_cases_path):
         logger.error(f"Cannot generate mock documents - test_cases.json not found at {test_cases_path}")
         return

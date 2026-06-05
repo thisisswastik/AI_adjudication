@@ -11,8 +11,11 @@ from backend.repositories import claim_repository, member_repository
 from backend.services.policy_service import PolicyService
 from backend.services.confidence_calculator import evaluate_confidence
 
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+WORKSPACE_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
+
 # Use a separate test SQLite database
-TEST_DB_URL = "sqlite:///c:/Users/swastik/Desktop/plum/backend/database/test_plum.db"
+TEST_DB_URL = f"sqlite:///{os.path.join(WORKSPACE_ROOT, 'backend', 'database', 'test_plum.db')}"
 
 @pytest.fixture(scope="module")
 def test_db():
@@ -49,18 +52,19 @@ def test_db():
         db.close()
         Base.metadata.drop_all(bind=engine)
         engine.dispose()
-        if os.path.exists("c:/Users/swastik/Desktop/plum/backend/database/test_plum.db"):
+        test_db_file = os.path.join(WORKSPACE_ROOT, 'backend', 'database', 'test_plum.db')
+        if os.path.exists(test_db_file):
             try:
-                os.remove("c:/Users/swastik/Desktop/plum/backend/database/test_plum.db")
+                os.remove(test_db_file)
             except Exception:
                 pass
 
 @pytest.fixture(scope="module")
 def policy_service():
-    return PolicyService(workspace_root="c:/Users/swastik/Desktop/plum")
+    return PolicyService(workspace_root=WORKSPACE_ROOT)
 
 def load_test_cases():
-    test_cases_path = "c:/Users/swastik/Desktop/plum/test_cases.json"
+    test_cases_path = os.path.join(WORKSPACE_ROOT, "test_cases.json")
     with open(test_cases_path, "r", encoding="utf-8") as f:
         return json.load(f).get("test_cases", [])
 

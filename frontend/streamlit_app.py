@@ -46,7 +46,8 @@ def api_post(endpoint: str, data: dict = None, files: dict = None, timeout: floa
 # Load test cases json if it exists
 @st.cache_data
 def load_test_cases():
-    test_cases_path = "c:/Users/swastik/Desktop/plum/test_cases.json"
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    test_cases_path = os.path.join(base_dir, "test_cases.json")
     if os.path.exists(test_cases_path):
         with open(test_cases_path, "r", encoding="utf-8") as f:
             return json.load(f).get("test_cases", [])

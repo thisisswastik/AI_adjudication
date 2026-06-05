@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: opd_adjudication_db
+    restart: always
+    environment:
+      POSTGRES_USER: plum_user
+      POSTGRES_PASSWORD: plum_password
+      POSTGRES_DB: plum_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plum_user -d plum_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: opd_adjudication_backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=plum_db
+      - DB_USER=plum_user
+      - DB_PASSWORD=plum_password
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - .:/app
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: opd_adjudication_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    volumes:
+      - .:/app
+    command: streamlit run frontend/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
+
+volumes:
+  postgres_data:

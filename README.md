@@ -1,3 +1,13 @@
+---
+title: Plum OPD Adjudication
+emoji: 🏥
+colorFrom: indigo
+colorTo: green
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Plum OPD Claim Adjudication Engine (AI Automation Assignment)
 
 🏥 An intelligent, enterprise-grade AI automation engine that automates the adjudication (approval/rejection) of Outpatient Department (OPD) insurance claims.
